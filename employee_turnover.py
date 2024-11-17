@@ -11,7 +11,6 @@ import xgboost as xgb
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (accuracy_score, classification_report, roc_auc_score, roc_curve, confusion_matrix)
-# Machine Learning imports
 from sklearn.model_selection import train_test_split, RepeatedStratifiedKFold, GridSearchCV
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler
@@ -26,7 +25,6 @@ from config import CONFIG
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-
 class EmployeeTurnoverPredictor:
     """Main class for employee turnover prediction."""
 
@@ -36,9 +34,15 @@ class EmployeeTurnoverPredictor:
         self.models = {}
         self.best_models = {}
         self.scalers = {}
+        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-        # Create model save directory if it doesn't exist
-        os.makedirs(config['model_saving']['save_dir'], exist_ok=True)
+        # Create directories if they don't exist
+        self.model_dir = os.path.join(config['model_saving']['save_dir'], self.timestamp, 'models')
+        self.plot_dir = os.path.join(config['model_saving']['save_dir'], self.timestamp, 'plots')
+        self.results_dir = os.path.join(config['model_saving']['save_dir'], self.timestamp, 'results')
+
+        for directory in [self.model_dir, self.plot_dir, self.results_dir]:
+            os.makedirs(directory, exist_ok=True)
 
     def load_data(self):
         """Load and perform initial data preparation."""
@@ -255,62 +259,69 @@ class EmployeeTurnoverPredictor:
             raise
 
     def plot_nn_training_history(self, history):
-        """Plot neural network training history."""
+        """Plot and save neural network training history."""
         plt.figure(figsize=(12, 4))
 
         # Plot training & validation accuracy
         plt.subplot(1, 2, 1)
         plt.plot(history.history['accuracy'])
         plt.plot(history.history['val_accuracy'])
-        plt.title('Model accuracy')
+        plt.title('Neural Network Training Accuracy')
         plt.ylabel('Accuracy')
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Validation'], loc='lower right')
+        plt.grid(True)
 
         # Plot training & validation loss
         plt.subplot(1, 2, 2)
         plt.plot(history.history['loss'])
         plt.plot(history.history['val_loss'])
-        plt.title('Model loss')
+        plt.title('Neural Network Training Loss')
         plt.ylabel('Loss')
         plt.xlabel('Epoch')
         plt.legend(['Train', 'Validation'], loc='upper right')
+        plt.grid(True)
 
         plt.tight_layout()
-        plt.show()
+
+        # Save plot
+        plot_path = os.path.join(self.plot_dir, 'nn_training_history.png')
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.info(f"Neural network training history plot saved to {plot_path}")
 
     def plot_feature_importance(self, X):
-        """Plot feature importance for tree-based models."""
+        """Plot and save feature importance for tree-based models."""
         plt.figure(figsize=(15, 10))
 
         # Get feature importance from different models
         importance_data = {}
+        model_names = ['random_forest', 'xgboost', 'lightgbm']
 
-        # Random Forest
-        if 'random_forest' in self.best_models:
-            rf_importance = self.best_models['random_forest'].feature_importances_
-            importance_data['Random Forest'] = pd.Series(rf_importance, index=X.columns)
-
-        # XGBoost
-        if 'xgboost' in self.best_models:
-            xgb_importance = self.best_models['xgboost'].feature_importances_
-            importance_data['XGBoost'] = pd.Series(xgb_importance, index=X.columns)
-
-        # LightGBM
-        if 'lightgbm' in self.best_models:
-            lgb_importance = self.best_models['lightgbm'].feature_importances_
-            importance_data['LightGBM'] = pd.Series(lgb_importance, index=X.columns)
+        for model_name in model_names:
+            if model_name in self.best_models:
+                importance = self.best_models[model_name].feature_importances_
+                importance_data[model_name.replace('_', ' ').title()] = pd.Series(importance, index=X.columns)
 
         # Plot feature importance for each model
         for idx, (model_name, importance) in enumerate(importance_data.items()):
             plt.subplot(len(importance_data), 1, idx + 1)
-            importance.sort_values(ascending=True).plot(kind='barh', title=f'{model_name} Feature Importance')
-            plt.tight_layout()
+            importance.sort_values(ascending=True).plot(kind='barh')
+            plt.title(f'{model_name} Feature Importance')
+            plt.xlabel('Importance Score')
+            plt.ylabel('Features')
+            plt.grid(True)
 
-        plt.show()
+        plt.tight_layout()
+
+        # Save plot
+        plot_path = os.path.join(self.plot_dir, 'feature_importance.png')
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.info(f"Feature importance plot saved to {plot_path}")
 
     def plot_roc_curves(self, X_test, y_test):
-        """Plot ROC curves for all models."""
+        """Plot and save ROC curves for all models."""
         plt.figure(figsize=(10, 6))
 
         for name, model in self.best_models.items():
@@ -322,20 +333,25 @@ class EmployeeTurnoverPredictor:
             fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
             roc_auc = roc_auc_score(y_test, y_pred_proba)
 
-            plt.plot(fpr, tpr, label=f'{name} (AUC = {roc_auc:.3f})')
+            plt.plot(fpr, tpr, label=f'{name.replace("_", " ").title()} (AUC = {roc_auc:.3f})')
 
-        plt.plot([0, 1], [0, 1], 'k--')
+        plt.plot([0, 1], [0, 1], 'k--', label='Random')
         plt.xlim([0.0, 1.0])
         plt.ylim([0.0, 1.05])
         plt.xlabel('False Positive Rate')
         plt.ylabel('True Positive Rate')
-        plt.title('ROC Curves for All Models')
+        plt.title('ROC Curves Comparison')
         plt.legend(loc="lower right")
         plt.grid(True)
-        plt.show()
+
+        # Save plot
+        plot_path = os.path.join(self.plot_dir, 'roc_curves.png')
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.info(f"ROC curves plot saved to {plot_path}")
 
     def plot_confusion_matrices(self, X_test, y_test):
-        """Plot confusion matrices for all models."""
+        """Plot and save confusion matrices for all models."""
         n_models = len(self.best_models)
         fig, axes = plt.subplots((n_models + 1) // 2, 2, figsize=(15, 5 * ((n_models + 1) // 2)))
         axes = axes.ravel()
@@ -348,7 +364,7 @@ class EmployeeTurnoverPredictor:
 
             cm = confusion_matrix(y_test, y_pred)
             sns.heatmap(cm, annot=True, fmt='d', ax=axes[idx], cmap='Blues')
-            axes[idx].set_title(f'Confusion Matrix - {name}')
+            axes[idx].set_title(f'Confusion Matrix - {name.replace("_", " ").title()}')
             axes[idx].set_xlabel('Predicted')
             axes[idx].set_ylabel('Actual')
 
@@ -357,44 +373,80 @@ class EmployeeTurnoverPredictor:
             fig.delaxes(axes[-1])
 
         plt.tight_layout()
-        plt.show()
 
+        # Save plot
+        plot_path = os.path.join(self.plot_dir, 'confusion_matrices.png')
+        plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+        plt.close()
+        logger.info(f"Confusion matrices plot saved to {plot_path}")
+
+    def save_results(self, results):
+        """Save detailed results to a text file."""
+        results_path = os.path.join(self.results_dir, 'model_results.txt')
+
+        with open(results_path, 'w') as f:
+            f.write("=" * 80 + "\n")
+            f.write("EMPLOYEE TURNOVER PREDICTION - MODEL EVALUATION RESULTS\n")
+            f.write(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write("=" * 80 + "\n\n")
+
+            for name, metrics in results.items():
+                f.write("-" * 40 + "\n")
+                f.write(f"Model: {name.replace('_', ' ').title()}\n")
+                f.write("-" * 40 + "\n")
+                f.write(f"Accuracy: {metrics['accuracy']:.4f}\n")
+                f.write(f"ROC AUC: {metrics['roc_auc']:.4f}\n")
+                f.write("\nClassification Report:\n")
+                f.write(metrics['classification_report'])
+                f.write("\n")
+
+        logger.info(f"Detailed results saved to {results_path}")
+
+    def save_models(self):
+        """Save trained models and scalers."""
+        for name, model in self.best_models.items():
+            if name == 'neural_network':
+                model_path = os.path.join(self.model_dir, f'{name}')
+                save_model(model, model_path)
+            else:
+                model_path = os.path.join(self.model_dir, f'{name}.{self.config["model_saving"]["save_format"]}')
+                joblib.dump(model, model_path)
+
+        # Save scalers
+        scaler_path = os.path.join(self.model_dir, f'scaler.{self.config["model_saving"]["save_format"]}')
+        joblib.dump(self.scalers, scaler_path)
+
+        logger.info(f"Models and scalers saved to {self.model_dir}")
 
 def main():
     """Main execution function."""
-    # Initialize predictor
     predictor = EmployeeTurnoverPredictor()
 
     try:
         # Load and prepare data
         df = predictor.load_data()
-
-        # Engineer features
         df_processed = predictor.engineer_features(df)
-
-        # Prepare data for modeling
         X_train, X_test, y_train, y_test = predictor.prepare_data(df_processed)
 
-        # Train models
+        # Train and evaluate models
         predictor.train_models(X_train, X_test, y_train, y_test)
-
-        # Evaluate models
         results = predictor.evaluate_models(X_test, y_test)
 
-        # Generate visualizations
+        # Generate and save visualizations
         predictor.plot_feature_importance(df_processed.drop('left', axis=1))
         predictor.plot_roc_curves(X_test, y_test)
         predictor.plot_confusion_matrices(X_test, y_test)
 
-        # Save models
+        # Save results and models
+        predictor.save_results(results)
         predictor.save_models()
 
-        logger.info("Analysis completed successfully!")
+        logger.info(
+            f"Analysis completed successfully! Results saved in {predictor.config['model_saving']['save_dir']}/{predictor.timestamp}")
 
     except Exception as e:
         logger.error(f"Error in main execution: {str(e)}")
         raise
-
 
 if __name__ == "__main__":
     main()
