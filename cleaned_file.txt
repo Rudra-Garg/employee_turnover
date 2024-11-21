@@ -1,0 +1,108 @@
+2024-11-17 17:21:50,229 - __main__ - INFO - Loading data...
+2024-11-17 17:21:50,250 - __main__ - INFO - Data loaded successfully. Shape: (14999, 10)
+2024-11-17 17:21:50,250 - __main__ - INFO - Engineering features...
+2024-11-17 17:21:51,070 - __main__ - INFO - Feature engineering completed. New shape: (14999, 1606)
+
+2024-11-17 17:21:54,476 - __main__ - INFO - Training logistic_regression...
+2024-11-17 17:31:26,241 - __main__ - INFO - Best parameters for logistic_regression: {'C': 0.001, 'penalty': 'l1', 'solver': 'liblinear'}
+2024-11-17 17:31:26,242 - __main__ - INFO - Best score for logistic_regression: 1.0000
+
+2024-11-17 17:31:26,242 - __main__ - INFO - Training random_forest...
+2024-11-17 17:38:59,328 - __main__ - INFO - Best parameters for random_forest: {'max_depth': 10, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 100}
+2024-11-17 17:38:59,328 - __main__ - INFO - Best score for random_forest: 1.0000
+
+2024-11-17 17:38:59,328 - __main__ - INFO - Training xgboost...
+2024-11-17 18:39:10,496 - __main__ - INFO - Best parameters for xgboost: {'learning_rate': 0.01, 'max_depth': 3, 'n_estimators': 100, 'subsample': 0.8}
+2024-11-17 18:39:10,497 - __main__ - INFO - Best score for xgboost: 1.0000
+
+2024-11-17 18:39:10,497 - __main__ - INFO - Training lightgbm...
+2024-11-17 19:04:47,612 - __main__ - INFO - Best parameters for lightgbm: {'learning_rate': 0.01, 'n_estimators': 100, 'num_leaves': 31}
+2024-11-17 19:04:47,613 - __main__ - INFO - Best score for lightgbm: 1.0000
+
+2024-11-17 19:04:47,613 - __main__ - INFO - Training Neural Network...
+
+2024-11-17 19:05:25,619 - __main__ - INFO - Neural network training history plot saved to saved_models/20241117_172150/plots/nn_training_history.png
+2024-11-17 19:05:25,758 - __main__ - INFO - 
+Results for logistic_regression:
+2024-11-17 19:05:25,758 - __main__ - INFO - Accuracy: 1.0000
+2024-11-17 19:05:25,758 - __main__ - INFO - ROC AUC: 1.0000
+2024-11-17 19:05:25,759 - __main__ - INFO - 
+Classification Report:
+2024-11-17 19:05:25,759 - __main__ - INFO -               precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      3428
+           1       1.00      1.00      1.00      1072
+
+    accuracy                           1.00      4500
+   macro avg       1.00      1.00      1.00      4500
+weighted avg       1.00      1.00      1.00      4500
+
+2024-11-17 19:05:25,848 - __main__ - INFO - 
+Results for random_forest:
+2024-11-17 19:05:25,848 - __main__ - INFO - Accuracy: 1.0000
+2024-11-17 19:05:25,848 - __main__ - INFO - ROC AUC: 1.0000
+2024-11-17 19:05:25,848 - __main__ - INFO - 
+Classification Report:
+2024-11-17 19:05:25,848 - __main__ - INFO -               precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      3428
+           1       1.00      1.00      1.00      1072
+
+    accuracy                           1.00      4500
+   macro avg       1.00      1.00      1.00      4500
+weighted avg       1.00      1.00      1.00      4500
+
+2024-11-17 19:05:25,928 - __main__ - INFO - 
+Results for xgboost:
+2024-11-17 19:05:25,928 - __main__ - INFO - Accuracy: 1.0000
+2024-11-17 19:05:25,928 - __main__ - INFO - ROC AUC: 1.0000
+2024-11-17 19:05:25,928 - __main__ - INFO - 
+Classification Report:
+2024-11-17 19:05:25,929 - __main__ - INFO -               precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      3428
+           1       1.00      1.00      1.00      1072
+
+    accuracy                           1.00      4500
+   macro avg       1.00      1.00      1.00      4500
+weighted avg       1.00      1.00      1.00      4500
+
+2024-11-17 19:05:26,131 - __main__ - INFO - 
+Results for lightgbm:
+2024-11-17 19:05:26,131 - __main__ - INFO - Accuracy: 1.0000
+2024-11-17 19:05:26,131 - __main__ - INFO - ROC AUC: 1.0000
+2024-11-17 19:05:26,132 - __main__ - INFO - 
+Classification Report:
+2024-11-17 19:05:26,132 - __main__ - INFO -               precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      3428
+           1       1.00      1.00      1.00      1072
+
+    accuracy                           1.00      4500
+   macro avg       1.00      1.00      1.00      4500
+weighted avg       1.00      1.00      1.00      4500
+
+
+2024-11-17 19:05:26,845 - __main__ - INFO - 
+Results for neural_network:
+2024-11-17 19:05:26,845 - __main__ - INFO - Accuracy: 1.0000
+2024-11-17 19:05:26,845 - __main__ - INFO - ROC AUC: 1.0000
+2024-11-17 19:05:26,845 - __main__ - INFO - 
+Classification Report:
+2024-11-17 19:05:26,845 - __main__ - INFO -               precision    recall  f1-score   support
+
+           0       1.00      1.00      1.00      3428
+           1       1.00      1.00      1.00      1072
+
+    accuracy                           1.00      4500
+   macro avg       1.00      1.00      1.00      4500
+weighted avg       1.00      1.00      1.00      4500
+
+2024-11-17 19:06:33,739 - __main__ - INFO - Feature importance plot saved to saved_models/20241117_172150/plots/feature_importance.png
+
+2024-11-17 19:06:35,428 - __main__ - INFO - ROC curves plot saved to saved_models/20241117_172150/plots/roc_curves.png
+
+2024-11-17 19:06:39,714 - __main__ - INFO - Confusion matrices plot saved to saved_models/20241117_172150/plots/confusion_matrices.png
+2024-11-17 19:06:39,714 - __main__ - INFO - Detailed results saved to saved_models/20241117_172150/results/model_results.txt
+
+
