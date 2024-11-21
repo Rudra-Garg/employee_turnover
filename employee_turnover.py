@@ -25,6 +25,7 @@ from config import CONFIG
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+
 class EmployeeTurnoverPredictor:
     """Main class for employee turnover prediction."""
 
@@ -418,6 +419,7 @@ class EmployeeTurnoverPredictor:
 
         logger.info(f"Models and scalers saved to {self.model_dir}")
 
+
 def main():
     """Main execution function."""
     predictor = EmployeeTurnoverPredictor()
@@ -447,6 +449,7 @@ def main():
     except Exception as e:
         logger.error(f"Error in main execution: {str(e)}")
         raise
+
 
 if __name__ == "__main__":
     main()

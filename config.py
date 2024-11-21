@@ -11,8 +11,8 @@ CONFIG = {
 
     # Feature engineering settings
     'feature_engineering': {
-        'create_interaction_terms': True,
-        'polynomial_degree': 2,
+        'create_interaction_terms': False,
+        'polynomial_degree': 1,
         'scaling_method': 'standard'  # Options: 'standard', 'minmax', 'robust'
     },
 
