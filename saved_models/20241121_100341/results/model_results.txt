@@ -1,0 +1,85 @@
+================================================================================
+EMPLOYEE TURNOVER PREDICTION - MODEL EVALUATION RESULTS
+Generated on: 2024-11-21 10:11:18
+================================================================================
+
+----------------------------------------
+Model: Logistic Regression
+----------------------------------------
+Accuracy: 0.7840
+ROC AUC: 0.6399
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.82      0.92      0.87      3428
+           1       0.57      0.36      0.45      1072
+
+    accuracy                           0.78      4500
+   macro avg       0.70      0.64      0.66      4500
+weighted avg       0.76      0.78      0.77      4500
+
+----------------------------------------
+Model: Random Forest
+----------------------------------------
+Accuracy: 0.9796
+ROC AUC: 0.9603
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.98      1.00      0.99      3428
+           1       0.99      0.92      0.96      1072
+
+    accuracy                           0.98      4500
+   macro avg       0.98      0.96      0.97      4500
+weighted avg       0.98      0.98      0.98      4500
+
+----------------------------------------
+Model: Xgboost
+----------------------------------------
+Accuracy: 0.9813
+ROC AUC: 0.9672
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.98      0.99      0.99      3428
+           1       0.98      0.94      0.96      1072
+
+    accuracy                           0.98      4500
+   macro avg       0.98      0.97      0.97      4500
+weighted avg       0.98      0.98      0.98      4500
+
+----------------------------------------
+Model: Lightgbm
+----------------------------------------
+Accuracy: 0.9831
+ROC AUC: 0.9694
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.98      1.00      0.99      3428
+           1       0.99      0.94      0.96      1072
+
+    accuracy                           0.98      4500
+   macro avg       0.98      0.97      0.98      4500
+weighted avg       0.98      0.98      0.98      4500
+
+----------------------------------------
+Model: Neural Network
+----------------------------------------
+Accuracy: 0.9640
+ROC AUC: 0.9389
+
+Classification Report:
+              precision    recall  f1-score   support
+
+           0       0.97      0.99      0.98      3428
+           1       0.95      0.89      0.92      1072
+
+    accuracy                           0.96      4500
+   macro avg       0.96      0.94      0.95      4500
+weighted avg       0.96      0.96      0.96      4500
+
